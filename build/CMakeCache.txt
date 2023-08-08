@@ -250,7 +250,7 @@ realsense_rtdi_IS_TOP_LEVEL:STATIC=ON
 realsense_rtdi_SOURCE_DIR:STATIC=/home/endre/Documents/realsense_aruco_eh
 
 //The directory containing a CMake configuration file for ur_rtde.
-ur_rtde_DIR:PATH=/usr/local/lib/cmake/ur_rtde
+ur_rtde_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/ur_rtde
 
 
 ########################

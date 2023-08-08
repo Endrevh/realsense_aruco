@@ -74,7 +74,6 @@ Matrix3d axisAngleToRotationMatrix(const Vector3d& axis_angle) {
          axis(2), 0.0, -axis(0),
          -axis(1), axis(0), 0.0;
 
-    // Rodrigues' rotation formula
     rotation_matrix = Matrix3d::Identity() +
                       sin_angle * K +
                       one_minus_cos * K * K;
@@ -82,18 +81,27 @@ Matrix3d axisAngleToRotationMatrix(const Vector3d& axis_angle) {
     return rotation_matrix;
 }
 
+Matrix3d rollPitchYawToRotationMatrix(double roll, double pitch, double yaw) {
+    // Calculate the individual rotation matrices
+    Matrix3d roll_matrix;
+    roll_matrix << 1, 0, 0,
+                   0, cos(roll), -sin(roll),
+                   0, sin(roll), cos(roll);
 
-Matrix3d rollPitchYawToRotationMatrix(double roll, double pitch, double yaw)
-{
-    // Create an Eigen::AngleAxis object for each rotation
-    AngleAxisd rollAngle(roll, Vector3d::UnitX());
-    AngleAxisd pitchAngle(pitch, Vector3d::UnitY());
-    AngleAxisd yawAngle(yaw, Vector3d::UnitZ());
+    Matrix3d pitch_matrix;
+    pitch_matrix << cos(pitch), 0, sin(pitch),
+                    0, 1, 0,
+                    -sin(pitch), 0, cos(pitch);
 
-    // Calculate the combined rotation matrix
-    Matrix3d rotationMatrix = yawAngle.toRotationMatrix() * pitchAngle.toRotationMatrix() * rollAngle.toRotationMatrix();
+    Matrix3d yaw_matrix;
+    yaw_matrix << cos(yaw), -sin(yaw), 0,
+                  sin(yaw), cos(yaw), 0,
+                  0, 0, 1;
 
-    return rotationMatrix;
+    // Combine the rotation matrices in the order: roll -> pitch -> yaw
+    Matrix3d rotation_matrix = roll_matrix * pitch_matrix * yaw_matrix;
+
+    return rotation_matrix;
 }
 
 Matrix4d buildTransformationMatrix(Matrix3d rotationMatrix, Vector3d translationVector)
@@ -117,4 +125,17 @@ Vector3d transformVector(const Matrix4d& T_a_b, const Vector3d& vector_b) {
     Vector3d vector_a(vector_a_homogeneous.x(), vector_a_homogeneous.y(), vector_a_homogeneous.z());
 
     return vector_a;
+}
+
+void extractTranslationAndRotation(const Matrix4d& transformationMatrix, Vector3d& translation, Vector3d& rotation)
+{
+    // Extract the translation vector (first three elements of the last column)
+    translation = transformationMatrix.block<3, 1>(0, 3);
+
+    // Extract the rotation vector (axis-angle representation)
+    Eigen::Matrix3d rotationMatrix = transformationMatrix.block<3, 3>(0, 0);
+    Eigen::AngleAxisd angleAxis(rotationMatrix);
+
+    // The axis of rotation is stored in the angle-axis representation
+    rotation = angleAxis.axis() * angleAxis.angle();
 }

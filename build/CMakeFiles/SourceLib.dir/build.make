@@ -111,10 +111,38 @@ CMakeFiles/SourceLib.dir/src/RealSenseCam.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SourceLib.dir/src/RealSenseCam.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/endre/Documents/realsense_aruco_eh/src/RealSenseCam.cpp -o CMakeFiles/SourceLib.dir/src/RealSenseCam.cpp.s
 
+CMakeFiles/SourceLib.dir/src/RobotController.cpp.o: CMakeFiles/SourceLib.dir/flags.make
+CMakeFiles/SourceLib.dir/src/RobotController.cpp.o: ../src/RobotController.cpp
+CMakeFiles/SourceLib.dir/src/RobotController.cpp.o: CMakeFiles/SourceLib.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/endre/Documents/realsense_aruco_eh/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/SourceLib.dir/src/RobotController.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SourceLib.dir/src/RobotController.cpp.o -MF CMakeFiles/SourceLib.dir/src/RobotController.cpp.o.d -o CMakeFiles/SourceLib.dir/src/RobotController.cpp.o -c /home/endre/Documents/realsense_aruco_eh/src/RobotController.cpp
+
+CMakeFiles/SourceLib.dir/src/RobotController.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SourceLib.dir/src/RobotController.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/endre/Documents/realsense_aruco_eh/src/RobotController.cpp > CMakeFiles/SourceLib.dir/src/RobotController.cpp.i
+
+CMakeFiles/SourceLib.dir/src/RobotController.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SourceLib.dir/src/RobotController.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/endre/Documents/realsense_aruco_eh/src/RobotController.cpp -o CMakeFiles/SourceLib.dir/src/RobotController.cpp.s
+
+CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.o: CMakeFiles/SourceLib.dir/flags.make
+CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.o: ../src/KalmanTesting.cpp
+CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.o: CMakeFiles/SourceLib.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/endre/Documents/realsense_aruco_eh/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.o -MF CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.o.d -o CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.o -c /home/endre/Documents/realsense_aruco_eh/src/KalmanTesting.cpp
+
+CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/endre/Documents/realsense_aruco_eh/src/KalmanTesting.cpp > CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.i
+
+CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/endre/Documents/realsense_aruco_eh/src/KalmanTesting.cpp -o CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.s
+
 CMakeFiles/SourceLib.dir/src/Utility.cpp.o: CMakeFiles/SourceLib.dir/flags.make
 CMakeFiles/SourceLib.dir/src/Utility.cpp.o: ../src/Utility.cpp
 CMakeFiles/SourceLib.dir/src/Utility.cpp.o: CMakeFiles/SourceLib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/endre/Documents/realsense_aruco_eh/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/SourceLib.dir/src/Utility.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/endre/Documents/realsense_aruco_eh/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/SourceLib.dir/src/Utility.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SourceLib.dir/src/Utility.cpp.o -MF CMakeFiles/SourceLib.dir/src/Utility.cpp.o.d -o CMakeFiles/SourceLib.dir/src/Utility.cpp.o -c /home/endre/Documents/realsense_aruco_eh/src/Utility.cpp
 
 CMakeFiles/SourceLib.dir/src/Utility.cpp.i: cmake_force
@@ -130,6 +158,8 @@ SourceLib_OBJECTS = \
 "CMakeFiles/SourceLib.dir/src/KalmanFilter.cpp.o" \
 "CMakeFiles/SourceLib.dir/src/ObjectTracker.cpp.o" \
 "CMakeFiles/SourceLib.dir/src/RealSenseCam.cpp.o" \
+"CMakeFiles/SourceLib.dir/src/RobotController.cpp.o" \
+"CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.o" \
 "CMakeFiles/SourceLib.dir/src/Utility.cpp.o"
 
 # External object files for target SourceLib
@@ -138,10 +168,12 @@ SourceLib_EXTERNAL_OBJECTS =
 libSourceLib.a: CMakeFiles/SourceLib.dir/src/KalmanFilter.cpp.o
 libSourceLib.a: CMakeFiles/SourceLib.dir/src/ObjectTracker.cpp.o
 libSourceLib.a: CMakeFiles/SourceLib.dir/src/RealSenseCam.cpp.o
+libSourceLib.a: CMakeFiles/SourceLib.dir/src/RobotController.cpp.o
+libSourceLib.a: CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.o
 libSourceLib.a: CMakeFiles/SourceLib.dir/src/Utility.cpp.o
 libSourceLib.a: CMakeFiles/SourceLib.dir/build.make
 libSourceLib.a: CMakeFiles/SourceLib.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/endre/Documents/realsense_aruco_eh/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX static library libSourceLib.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/endre/Documents/realsense_aruco_eh/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX static library libSourceLib.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/SourceLib.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/SourceLib.dir/link.txt --verbose=$(VERBOSE)
 

@@ -125,7 +125,7 @@ realsense_rtdi: /usr/local/lib/libopencv_wechat_qrcode.so.4.8.0
 realsense_rtdi: /usr/local/lib/libopencv_xfeatures2d.so.4.8.0
 realsense_rtdi: /usr/local/lib/libopencv_xobjdetect.so.4.8.0
 realsense_rtdi: /usr/local/lib/libopencv_xphoto.so.4.8.0
-realsense_rtdi: /usr/local/lib/librtde.so.1.5.6
+realsense_rtdi: /usr/lib/x86_64-linux-gnu/librtde.so.1.5.6
 realsense_rtdi: /usr/local/lib/librealsense2.so.2.54.1
 realsense_rtdi: /usr/local/lib/libopencv_shape.so.4.8.0
 realsense_rtdi: /usr/local/lib/libopencv_highgui.so.4.8.0

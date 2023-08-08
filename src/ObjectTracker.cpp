@@ -1,14 +1,14 @@
 #include "ObjectTracker.hpp"
 
-ObjectTracker::ObjectTracker(double dt, const MatrixXd& A, const MatrixXd& C, const MatrixXd& Q, const MatrixXd& R):
-    kalmanFilter(dt, A, C, Q, R)
+ObjectTracker::ObjectTracker(double dt, const MatrixXd& A, const MatrixXd& C, const MatrixXd& Q, const MatrixXd& R, const VectorXd& randomWalkCoeff = VectorXd::Zero(6))
+    : kalmanFilter(dt, A, C, Q, R, randomWalkCoeff)
 {
-    state = State::SEARCHING;
+    state = TrackerState::SEARCHING;
 }
 
 void ObjectTracker::skip()
 {
-    state = State::SEARCHING;
+    state = TrackerState::SEARCHING;
 }
 
 
@@ -16,10 +16,8 @@ void ObjectTracker::update(Vector3d objectPosition_base, Vector3d cameraPosition
 {
     switch (state)
     {
-        case State::SEARCHING:
-            /*if (isnan(tvec_base[0])) break;*/ //NaN, keep searching
-            
-            state = State::TRACKING;
+        case TrackerState::SEARCHING:
+            state = TrackerState::TRACKING;
 
             kalmanFilter.reset(objectPosition_base);
 
@@ -27,14 +25,9 @@ void ObjectTracker::update(Vector3d objectPosition_base, Vector3d cameraPosition
 
             break;
         
-        case State::TRACKING:
-            /*if (isnan(tvec_base[0])) //NaN, go back to searching
-            {
-                state = State::SEARCHING;
-                break;
-            };*/
+        case TrackerState::TRACKING:
             kalmanFilter.predict();
-            kalmanFilter.update(objectPosition_base);
+            kalmanFilter.correction(objectPosition_base);
             break;
 
         default:
@@ -42,7 +35,7 @@ void ObjectTracker::update(Vector3d objectPosition_base, Vector3d cameraPosition
     }
 }
 
-VectorXd ObjectTracker::getEstimatedPosition()
+VectorXd ObjectTracker::getEstimatedPositionAndVelocity()
 {
     return kalmanFilter.getState();
 }
@@ -50,4 +43,9 @@ VectorXd ObjectTracker::getEstimatedPosition()
 Vector3d ObjectTracker::getTargetOffset()
 {
     return targetOffset_base;
+}
+
+TrackerState ObjectTracker::getTrackerState()
+{
+    return state;
 }

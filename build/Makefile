@@ -190,6 +190,30 @@ src/KalmanFilter.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SourceLib.dir/build.make CMakeFiles/SourceLib.dir/src/KalmanFilter.cpp.s
 .PHONY : src/KalmanFilter.cpp.s
 
+src/KalmanTesting.o: src/KalmanTesting.cpp.o
+.PHONY : src/KalmanTesting.o
+
+# target to build an object file
+src/KalmanTesting.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SourceLib.dir/build.make CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.o
+.PHONY : src/KalmanTesting.cpp.o
+
+src/KalmanTesting.i: src/KalmanTesting.cpp.i
+.PHONY : src/KalmanTesting.i
+
+# target to preprocess a source file
+src/KalmanTesting.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SourceLib.dir/build.make CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.i
+.PHONY : src/KalmanTesting.cpp.i
+
+src/KalmanTesting.s: src/KalmanTesting.cpp.s
+.PHONY : src/KalmanTesting.s
+
+# target to generate assembly for a file
+src/KalmanTesting.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SourceLib.dir/build.make CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.s
+.PHONY : src/KalmanTesting.cpp.s
+
 src/ObjectTracker.o: src/ObjectTracker.cpp.o
 .PHONY : src/ObjectTracker.o
 
@@ -238,6 +262,30 @@ src/RealSenseCam.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SourceLib.dir/build.make CMakeFiles/SourceLib.dir/src/RealSenseCam.cpp.s
 .PHONY : src/RealSenseCam.cpp.s
 
+src/RobotController.o: src/RobotController.cpp.o
+.PHONY : src/RobotController.o
+
+# target to build an object file
+src/RobotController.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SourceLib.dir/build.make CMakeFiles/SourceLib.dir/src/RobotController.cpp.o
+.PHONY : src/RobotController.cpp.o
+
+src/RobotController.i: src/RobotController.cpp.i
+.PHONY : src/RobotController.i
+
+# target to preprocess a source file
+src/RobotController.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SourceLib.dir/build.make CMakeFiles/SourceLib.dir/src/RobotController.cpp.i
+.PHONY : src/RobotController.cpp.i
+
+src/RobotController.s: src/RobotController.cpp.s
+.PHONY : src/RobotController.s
+
+# target to generate assembly for a file
+src/RobotController.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SourceLib.dir/build.make CMakeFiles/SourceLib.dir/src/RobotController.cpp.s
+.PHONY : src/RobotController.cpp.s
+
 src/Utility.o: src/Utility.cpp.o
 .PHONY : src/Utility.o
 
@@ -278,12 +326,18 @@ help:
 	@echo "... src/KalmanFilter.o"
 	@echo "... src/KalmanFilter.i"
 	@echo "... src/KalmanFilter.s"
+	@echo "... src/KalmanTesting.o"
+	@echo "... src/KalmanTesting.i"
+	@echo "... src/KalmanTesting.s"
 	@echo "... src/ObjectTracker.o"
 	@echo "... src/ObjectTracker.i"
 	@echo "... src/ObjectTracker.s"
 	@echo "... src/RealSenseCam.o"
 	@echo "... src/RealSenseCam.i"
 	@echo "... src/RealSenseCam.s"
+	@echo "... src/RobotController.o"
+	@echo "... src/RobotController.i"
+	@echo "... src/RobotController.s"
 	@echo "... src/Utility.o"
 	@echo "... src/Utility.i"
 	@echo "... src/Utility.s"

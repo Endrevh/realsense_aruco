@@ -34,3 +34,8 @@ void RealSenseCamera::close()
 {
     pipeline.stop();
 }
+
+rs2::pipeline RealSenseCamera::getPipeline()
+{
+    return pipeline;
+}

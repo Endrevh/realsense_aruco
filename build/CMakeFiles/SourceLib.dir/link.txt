@@ -1,2 +1,2 @@
-/usr/bin/ar qc libSourceLib.a CMakeFiles/SourceLib.dir/src/KalmanFilter.cpp.o CMakeFiles/SourceLib.dir/src/ObjectTracker.cpp.o CMakeFiles/SourceLib.dir/src/RealSenseCam.cpp.o CMakeFiles/SourceLib.dir/src/Utility.cpp.o
+/usr/bin/ar qc libSourceLib.a CMakeFiles/SourceLib.dir/src/KalmanFilter.cpp.o CMakeFiles/SourceLib.dir/src/ObjectTracker.cpp.o CMakeFiles/SourceLib.dir/src/RealSenseCam.cpp.o CMakeFiles/SourceLib.dir/src/RobotController.cpp.o CMakeFiles/SourceLib.dir/src/KalmanTesting.cpp.o CMakeFiles/SourceLib.dir/src/Utility.cpp.o
 /usr/bin/ranlib libSourceLib.a

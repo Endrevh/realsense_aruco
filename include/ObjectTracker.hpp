@@ -5,7 +5,7 @@
 
 using namespace std;
 
-enum class State {
+enum class TrackerState {
     SEARCHING,
     TRACKING
 };
@@ -14,19 +14,21 @@ class ObjectTracker
 {
     private:
         KalmanFilterSintef kalmanFilter;
-        State state;
+        TrackerState state;
         Vector3d targetOffset_base;
 
     public:
-        ObjectTracker(double dt, const MatrixXd& A, const MatrixXd& C, const MatrixXd& Q, const MatrixXd& R);
+        ObjectTracker(double dt, const MatrixXd& A, const MatrixXd& C, const MatrixXd& Q, const MatrixXd& R, const VectorXd& randomWalkCoeff);
 
         void skip();
 
-        void update(Vector3d tvec_base, Vector3d cameraPosition_base);
+        void update(Vector3d objectPosition_base, Vector3d cameraPosition_base = Vector3d(0, 0, 0));
 
-        VectorXd getEstimatedPosition();
+        VectorXd getEstimatedPositionAndVelocity();
 
         Vector3d getTargetOffset();
+
+        TrackerState getTrackerState();
 };
 
 #endif

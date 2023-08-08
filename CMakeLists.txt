@@ -22,6 +22,8 @@ SET(LIB_SOURCES
     src/KalmanFilter.cpp
     src/ObjectTracker.cpp
     src/RealSenseCam.cpp
+    src/RobotController.cpp
+    src/KalmanTesting.cpp
     src/Utility.cpp
 )
 

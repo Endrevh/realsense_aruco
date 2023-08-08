@@ -1,6 +1,7 @@
 #include <Eigen/Dense>
 #include <iostream>
 #include <fstream>
+#include <cmath>
 #include <opencv2/opencv.hpp>
 
 #ifndef UTILITY_H
@@ -26,5 +27,7 @@ Matrix3d rollPitchYawToRotationMatrix(double roll, double pitch, double yaw);
 Matrix4d buildTransformationMatrix(Matrix3d rotationMatrix, Vector3d translationVector);
 
 Vector3d transformVector(const Matrix4d& T_a_b, const Vector3d& vector_b);
+
+void extractTranslationAndRotation(const Matrix4d& transformationMatrix, Vector3d& translation, Vector3d& rotation);
 
 #endif

@@ -29,6 +29,8 @@ class RealSenseCamera {
         pair<Mat, bool> get_color_data();     
 
         void close();
+
+        rs2::pipeline getPipeline();
 };
 
 #endif
