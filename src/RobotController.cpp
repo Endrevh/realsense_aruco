@@ -6,18 +6,18 @@ RobotController::RobotController(const string& robotIP, const int frequency)
 
 }
 
-void RobotController::servoL(vector<double> targetPose, vector<double> currentPose, double time, double lookahead_time, double reductionFactor)
+void RobotController::servoL(vector<double> targetPose, vector<double> currentPose, double time, double lookahead_time, double scalingFactor)
 {
     double acceleration = 0.1; //these inputs get ignored in the current version of ur_rtde
     double speed = 0.1;
     double gain = 100; //minimum tolarated value is 100
 
-    VectorXd actualTargetPosition;
+    VectorXd actualTargetPosition(6);
     actualTargetPosition << targetPose[0], targetPose[1], targetPose[2], targetPose[3], targetPose[4], targetPose[5];
-    VectorXd currentPosition;
+    VectorXd currentPosition(6);
     currentPosition << currentPose[0], currentPose[1], currentPose[2], currentPose[3], currentPose[4], currentPose[5];
     
-    VectorXd intermediateTargetPosition = currentPosition + (actualTargetPosition - currentPosition) * reductionFactor;
+    VectorXd intermediateTargetPosition = currentPosition + (actualTargetPosition - currentPosition) * scalingFactor;
 
     vector<double> intermediateTargetPose = {intermediateTargetPosition[0], intermediateTargetPosition[1], intermediateTargetPosition[2],
                                          intermediateTargetPosition[3], intermediateTargetPosition[4], intermediateTargetPosition[5]};
@@ -42,7 +42,8 @@ void RobotController::speedControlPD(vector<double> targetPose, vector<double> c
     rtde_control.speedL(desiredSpeed, acceleration);
 }
 
-void RobotController::haltSpeedControl()
+void RobotController::haltRobot()
 {
-    rtde_control.speedStop(1.0);
+    //rtde_control.speedStop(1.0);
+    rtde_control.servoStop(1.0); //typical 25ms
 }

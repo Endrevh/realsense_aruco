@@ -31,6 +31,8 @@ ADD_LIBRARY(SourceLib ${LIB_SOURCES})
 
 ADD_EXECUTABLE(realsense_rtdi main.cpp)
 
+#TARGET_COMPILE_OPTIONS(realsense_rtdi PRIVATE -O3)
+
 message(STATUS "Realsense package found: ${realsense2_FOUND}")
 #message(STATUS "Linker Flags: ${CMAKE_EXE_LINKER_FLAGS}")
 

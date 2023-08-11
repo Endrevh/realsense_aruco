@@ -15,6 +15,7 @@ private:
 
     mt19937 randomGenerator;
     uniform_real_distribution<double> randomDistribution;
+    //normal_real_distribution<double> randomDistributionNormal;
 
 public:
     KalmanTesting(KalmanFilterSintef kalmanFilter);

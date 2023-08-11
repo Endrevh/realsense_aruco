@@ -18,10 +18,11 @@ class RobotController
     public:
         RobotController(const string& robotIP, const int frequency);
 
-        void servoL(vector<double> targetPose, vector<double> currentPose, double time, double lookahead_time, double reductionFactor);
+        void servoL(vector<double> targetPose, vector<double> currentPose, double time, double lookahead_time, double scalingFactor);
 
         void speedControlPD(vector<double> targetPose, vector<double> currentPose, vector<double> currentSpeed, double Kp, double Kd = 1.0, double acceleration = 1.0);
-        void haltSpeedControl();
+        
+        void haltRobot();
 };
 
 #endif

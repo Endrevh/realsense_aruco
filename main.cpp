@@ -10,12 +10,18 @@
 using namespace aruco;
 using namespace ur_rtde;
 
-void controllerNotify(bool& controllerReady) {
-    controllerReady = true;
+void controllerNotify(bool& controllerReady, int controller_dt_us, chrono::_V2::system_clock::time_point previousTimestamp) {
+    while (true) {
+        controllerReady = true;
+        this_thread::sleep_for(std::chrono::microseconds(controller_dt_us));
+    }
 }
 
-void cameraNotify(bool& cameraReady) {
-    cameraReady = true;
+void cameraNotify(bool& cameraReady, int camera_dt_us) {
+    while (true) {
+        cameraReady = true;
+        this_thread::sleep_for(std::chrono::microseconds(camera_dt_us));
+    }
 }
 
 void runVisualServo()
@@ -53,11 +59,11 @@ void runVisualServo()
 
     double cameraFrequency = cameraFPS;
     double camera_dt = 1 / cameraFrequency;
-    int camera_dt_ms = 1000 * camera_dt;
+    int camera_dt_us = 1000000 * camera_dt;
 
-    double controllerFrequency = 125.0;
+    double controllerFrequency = 30.0;
     double controller_dt = 1 / controllerFrequency;
-    int controller_dt_ms = 1000 * controller_dt;
+    int controller_dt_us = 1000000 * controller_dt;
 
     MatrixXd A(6, 6);
     A << 1, 0, 0, camera_dt, 0, 0,
@@ -100,51 +106,100 @@ void runVisualServo()
     bool cameraReady = false;
     bool controllerReady = false;
 
-    thread controllerTimer([&]() {
-        while (true) {
-            controllerNotify(controllerReady);
-            this_thread::sleep_for(std::chrono::milliseconds(controller_dt_ms));
-        }
-    });
+    //prøv to ting: 
+    // 1. ikke ta inn & som tydeligvis representerer alle variabler. Heller ta inn bare den som skal endres.
+    // 2. spawn trådene på en annen måte, som de gjør i documentation. Bruk lambda funksjoner.
 
-    thread cameraTimer([&]() {
-        while (true) {
-            cameraNotify(cameraReady);
-            this_thread::sleep_for(std::chrono::milliseconds(camera_dt_ms));
-        }
-    });
+    auto startTime = chrono::high_resolution_clock::now();
+    auto previousTimestamp = chrono::high_resolution_clock::now();
 
+    thread cameraThread(cameraNotify, ref(cameraReady), camera_dt_us);
+    thread controllerThread(controllerNotify, ref(controllerReady), controller_dt_us, ref(previousTimestamp));
+
+    string fileName = "../data/servo100.txt";
+    ofstream file(fileName);
+
+    file.clear();
 
     while (true)
     {  
+        /*if (cameraReady)
+        {
+            cameraReady = false;
+        }
+        if (controllerReady)
+        {
+            controllerReady = false;
+
+            auto timeStamp = chrono::high_resolution_clock::now();
+            double timeStep = chrono::duration_cast<chrono::microseconds>(timeStamp - previousTimestamp).count() / 1000000.0;
+            previousTimestamp = chrono::high_resolution_clock::now();
+            cout << "Time step: " << timeStep << endl;
+
+            //this_thread::sleep_for(std::chrono::milliseconds(9));
+        }*/
         if (cameraReady)
         {
+
             cameraReady = false;
 
             auto start = std::chrono::high_resolution_clock::now();
 
             Mat frame;
             bool received;
-            tie(frame, received) = camera.get_color_data();
+            tie(frame, received) = camera.get_color_data(); // initially typical 20ms, drops to <1ms
+            
 
+            auto end = chrono::high_resolution_clock::now();
+            double camera_time = chrono::duration_cast<chrono::microseconds>(end - start).count() / 1000.0;
+            cout << "Get color data time:                  " << camera_time << "ms" << endl; 
             Mat grayFrame;
-            cvtColor(frame, grayFrame, cv::COLOR_BGR2GRAY);
-            Mat outputImage = grayFrame.clone();
+            
+
+            start = std::chrono::high_resolution_clock::now();
+            cvtColor(frame, grayFrame, cv::COLOR_BGR2GRAY); // typical <1ms
+            end = chrono::high_resolution_clock::now();
+            double cvt_color_time = chrono::duration_cast<chrono::microseconds>(end - start).count() / 1000.0;
+            cout << "Cvt color time: " << cvt_color_time << "ms" << endl;
+            //Mat outputImage = grayFrame.clone();
+            
 
             vector<int> markerIds;
             vector<vector<Point2f>> markerCorners;
             
-            detector.detectMarkers(grayFrame, markerCorners, markerIds);
+
+            start = std::chrono::high_resolution_clock::now();
+
+            detector.detectMarkers(grayFrame, markerCorners, markerIds); // typical 12ms
+
+            end = chrono::high_resolution_clock::now();
+            double detect_markers_time = chrono::duration_cast<chrono::microseconds>(end - start).count() / 1000.0;
+            cout << "Detect markers time: " << detect_markers_time << "ms" << endl;
 
             //detectMarkers(grayFrame, &aruco_dict, markerCorners, markerIds, &detectorParams);
-            
+
             if (markerIds.size() != 1)
             {
-                tracker.skip();
-                robotController.haltSpeedControl();
+                //tracker.skip();camera_time
+                TrackerState trackerState = tracker.getTrackerState();
+
+                if (trackerState == TrackerState::TRACKING)
+                {
+                    tracker.skip();
+                    robotController.haltRobot();
+                }
+                
+                start = std::chrono::high_resolution_clock::now();
+                end = chrono::high_resolution_clock::now();
+                double halt_robot_time = chrono::duration_cast<chrono::microseconds>(end - start).count() / 1000.0;
+                cout << "Halt robot time: " << halt_robot_time << "ms" << endl;
+                
+                //robotController.haltSpeedControl();
             }
             else
             {
+                start = std::chrono::high_resolution_clock::now();
+
                 vector<Vec3d> tvecsObject_camera_temp;
                 vector<Vec3d> rvecsObject_camera_temp;
 
@@ -155,11 +210,13 @@ void runVisualServo()
                 tvecObject_camera << tvecsObject_camera_temp[0][0], tvecsObject_camera_temp[0][1], tvecsObject_camera_temp[0][2];
                 rvecObject_camera << rvecsObject_camera_temp[0][0], rvecsObject_camera_temp[0][1], rvecsObject_camera_temp[0][2];
 
+                //file << tvecObject_camera[0] << "," << tvecObject_camera[1] << "," << tvecObject_camera[2] << endl;
+
                 //later: bygg T_camera_object, og regn ut T_base_object = T_base_flange * T_flange_camera * T_camera_object, og extract tvec_base og rvec_base derfra
                 //Matrix3d R_camera_object = axisAngleToRotationMatrix(rvecObject_camera);
-                //Matrix4d T_camera_object = buildTransformationMatrix(R_camera_object, tvecObject_camera);*/
+                //Matrix4d T_camera_object = buildTransformationMatrix(R_camera_object, tvecObject_camera);
 
-                drawFrameAxes(outputImage, cameraMatrix, distortionVector, rvecsObject_camera_temp[0], tvecsObject_camera_temp[0], 0.1);
+                //drawFrameAxes(outputImage, cameraMatrix, distortionVector, rvecsObject_camera_temp[0], tvecsObject_camera_temp[0], 0.1);
                 
                 vector<double> poseFlange_base = rtdeReceive.getActualTCPPose();
                 //cout << poseFlange_base[0] << " " << poseFlange_base[1] << " " << poseFlange_base[2] << endl;
@@ -179,32 +236,47 @@ void runVisualServo()
 
                 Vector3d tvecCamera_base = T_base_camera.block<3, 1>(0, 3);   
                 tracker.update(tvecObject_base, tvecCamera_base);
+
+                end = chrono::high_resolution_clock::now();
+                double update_tracker_time = chrono::duration_cast<chrono::microseconds>(end - start).count() / 1000.0;
+                cout << "Update tracker time: " << update_tracker_time << "ms" << endl;
+                
             }
 
-            drawDetectedMarkers(outputImage, markerCorners, markerIds);
-            imshow("Image", outputImage);
-
+            //drawDetectedMarkers(outputImage, markerCorners, markerIds);
+            //imshow("Image", outputImage);
+            
         }
 
         if (controllerReady)
         {
             controllerReady = false;
 
-
             TrackerState state = tracker.getTrackerState();
 
             switch (state)
             {
                 case TrackerState::SEARCHING:
+                    //cout << "Searching" << endl;
                     break;
                 
                 case TrackerState::TRACKING:
                 {
+                    auto timeStamp = chrono::high_resolution_clock::now();
+                    double timeStep = chrono::duration_cast<chrono::microseconds>(timeStamp - previousTimestamp).count() / 1000000.0;
+                    previousTimestamp = chrono::high_resolution_clock::now();
+                    cout << "Time step: " << timeStep << endl;
+
+                    //cout << "Tracking" << endl;
+                    auto start = std::chrono::high_resolution_clock::now();
+
                     Vector3d objectPosition_base = tracker.getEstimatedPositionAndVelocity().head<3>();
                     Vector3d objectVelocity_base = tracker.getEstimatedPositionAndVelocity().tail<3>();
                     Vector3d trackingOffset_base = tracker.getTargetOffset();
 
                     vector<double> poseFlange_base = rtdeReceive.getActualTCPPose();
+                    vector<double> internalTCPTarget_base = rtdeReceive.getTargetTCPPose();
+
                     Vector3d tvecFlange_base(poseFlange_base[0], poseFlange_base[1], poseFlange_base[2]);
                     Vector3d rvecFlange_base(poseFlange_base[3], poseFlange_base[4], poseFlange_base[5]);
                     Matrix3d R_base_flange = axisAngleToRotationMatrix(rvecFlange_base);
@@ -220,20 +292,33 @@ void runVisualServo()
                     vector<double> targetPose = {targetPosition_base[0], targetPosition_base[1], targetPosition_base[2],
                                         poseFlange_base[3], poseFlange_base[4], poseFlange_base[5]};
 
-                    cout << "-----------------------" << endl;
-                    cout << "Current position: " << poseFlange_base[0] << " " << poseFlange_base[1] << " " << poseFlange_base[2] << endl;
-                    cout << "Estimated position: " << objectPosition_base[0] << " " << objectPosition_base[1] << " " << objectPosition_base[2] << endl;
-                    cout << "Estimated velocity: " << objectVelocity_base[0] << " " << objectVelocity_base[1] << " " << objectVelocity_base[2] << endl;
-                    cout << "Target position: " << targetPosition_base[0] << " " << targetPosition_base[1] << " " << targetPosition_base[2] << endl;
-
-                    double lookahead_time = 0.1;
-                    double reductionFactor = 0.4;
-                    //robotController.servoL(targetPose, poseFlange_base, dt, lookahead_time, reductionFactor);
+                    //cout << "-----------------------" << endl;
+                    //cout << "Current position: " << poseFlange_base[0] << " " << poseFlange_base[1] << " " << poseFlange_base[2] << endl;
+                    //cout << "Estimated position: " << objectPosition_base[0] << " " << objectPosition_base[1] << " " << objectPosition_base[2] << endl;
+                    //cout << "Estimated velocity: " << objectVelocity_base[0] << " " << objectVelocity_base[1] << " " << objectVelocity_base[2] << endl;
+                    //cout << "Target position: " << targetPosition_base[0] << " " << targetPosition_base[1] << " " << targetPosition_base[2] << endl;
 
                     vector<double> speedFlange_base = rtdeReceive.getActualTCPSpeed();
+                    vector<double> internalTCPSpeed_base = rtdeReceive.getTargetTCPSpeed();
                     double Kp = 1.0;
                     double Kd = 0.0;
-                    robotController.speedControlPD(targetPose, poseFlange_base, speedFlange_base, Kp, Kd);
+                    //robotController.speedControlPD(targetPose, poseFlange_base, speedFlange_base, Kp, Kd);
+                
+
+                    // write to file on the following format: timestamp, Kalman state estimate 6, trackingOffset 3, tcp_pose 6, internal tcp target 6, min egen target pose 6, tcp speed 6, internal tcp speed 6
+                    auto fileTimeStamp = std::chrono::high_resolution_clock::now();
+                    double fileTimeStampDouble = std::chrono::duration_cast<std::chrono::microseconds>(fileTimeStamp - startTime).count() / 1000000.0;
+                    file << fileTimeStampDouble << "," << objectPosition_base[0] << "," << objectPosition_base[1] << "," << objectPosition_base[2] << "," << objectVelocity_base[0] << "," << objectVelocity_base[1] << "," << objectVelocity_base[2] << "," << trackingOffset_base[0] << "," << trackingOffset_base[1] << "," << trackingOffset_base[2] << "," << poseFlange_base[0] << "," << poseFlange_base[1] << "," << poseFlange_base[2] << "," << poseFlange_base[3] << "," << poseFlange_base[4] << "," << poseFlange_base[5] << "," << internalTCPTarget_base[0] << "," << internalTCPTarget_base[1] << "," << internalTCPTarget_base[2] << "," << internalTCPTarget_base[3] << "," << internalTCPTarget_base[4] << "," << internalTCPTarget_base[5] << "," << targetPose[0] << "," << targetPose[1] << "," << targetPose[2] << "," << targetPose[3] << "," << targetPose[4] << "," << targetPose[5] << "," << speedFlange_base[0] << "," << speedFlange_base[1] << "," << speedFlange_base[2] << "," << speedFlange_base[3] << "," << speedFlange_base[4] << "," << speedFlange_base[5] << "," << internalTCPSpeed_base[0] << "," << internalTCPSpeed_base[1] << "," << internalTCPSpeed_base[2] << "," << internalTCPSpeed_base[3] << "," << internalTCPSpeed_base[4] << "," << internalTCPSpeed_base[5] << endl;
+
+                    auto end = std::chrono::high_resolution_clock::now();
+                    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+                    double duration_sec = duration.count() / 10000000.0;
+                    cout << "Controller time: " << duration_sec / 1000 << "ms" << endl;
+
+                    double executionTime = controller_dt - duration_sec;
+                    double lookahead_time = 0.1;
+                    double reductionFactor = 1.0;
+                    robotController.servoL(targetPose, poseFlange_base, executionTime, lookahead_time, reductionFactor);
 
                     break;
                 }
@@ -241,7 +326,6 @@ void runVisualServo()
                     break;
             }
         }
-
         
         //auto end = std::chrono::high_resolution_clock::now();
         //auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -250,11 +334,12 @@ void runVisualServo()
         //this_thread::sleep_for(std::chrono::milliseconds(sleepTime.count()));
         
 
-        if (cv::waitKey(1) == 'q')
-            break;
+        /*if (cv::waitKey(1) == 'q')
+            break;*/
     }
 
     camera.close();
+    file.close();
 }
 
 void runKalmanSimulation()
@@ -280,16 +365,16 @@ void runKalmanSimulation()
     Q << 0.1, 0, 0, 0, 0, 0,
          0, 0.1, 0, 0, 0, 0,
          0, 0, 0.1, 0, 0, 0,
-         0, 0, 0, 10, 0, 0,
-         0, 0, 0, 0, 10, 0,
-         0, 0, 0, 0, 0, 10;
+         0, 0, 0, 100, 0, 0,
+         0, 0, 0, 0, 100, 0,
+         0, 0, 0, 0, 0, 100;
     
     //Q.setIdentity();
     //Q *= 0.1;
 
     MatrixXd R(3,3);
     R.setIdentity();
-    R *= 0.1;
+    R *= 1;
 
     VectorXd randomWalkCoeff(6); //probably not needed, we already have Q (process noise)
     randomWalkCoeff << 0, 0, 0, 0.0, 0.0, 0.0;
@@ -297,15 +382,14 @@ void runKalmanSimulation()
     KalmanFilterSintef testFilter(camera_dt, A, C, Q, R, randomWalkCoeff);
     KalmanTesting kalmanTesting(testFilter);
     kalmanTesting.runSimulation(100);
-    string fileName = "../data/Q_1_1_R_1.txt";
+    string fileName = "../data/Q_01_100_R_1.txt";
     kalmanTesting.writeTrajectoriesToFile(fileName);
     cout << "Wrote data to " << fileName << endl;
-
 }
 
 int main(int argc, char** argv)
 {
-    //runVisualServo();
+    runVisualServo();
 
-    runKalmanSimulation();
+    //runKalmanSimulation();
 }

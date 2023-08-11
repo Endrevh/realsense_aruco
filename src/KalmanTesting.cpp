@@ -2,7 +2,7 @@
 
 
 KalmanTesting::KalmanTesting(KalmanFilterSintef kalmanFilter)
-    : randomDistribution(-0.05, 0.05), kalmanFilter_(kalmanFilter)
+    : randomDistribution(-0.01, 0.01), kalmanFilter_(kalmanFilter)
 {
 }
 
