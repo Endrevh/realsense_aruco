@@ -25,7 +25,7 @@ void RobotController::servoL(vector<double> targetPose, vector<double> currentPo
     rtde_control.servoL(intermediateTargetPose, acceleration, speed, time, lookahead_time, gain);
 }
 
-void RobotController::speedControlPD(vector<double> targetPose, vector<double> currentPose, vector<double> currentSpeed, double Kp, double Kd, double acceleration)
+void RobotController::speedControlPD(vector<double> targetPose, vector<double> currentPose, vector<double> currentSpeed, double Kp, double time, double Kd, double acceleration)
 {
     VectorXd targetPoseVec(6);
     targetPoseVec << targetPose[0], targetPose[1], targetPose[2], targetPose[3], targetPose[4], targetPose[5];
@@ -34,16 +34,16 @@ void RobotController::speedControlPD(vector<double> targetPose, vector<double> c
     VectorXd currentSpeedVec(6);
     currentSpeedVec << currentSpeed[0], currentSpeed[1], currentSpeed[2], currentSpeed[3], currentSpeed[4], currentSpeed[5];
 
-    VectorXd desiredSpeedVec = Kp * (targetPoseVec - currentPoseVec) - Kd * currentSpeedVec;
+    VectorXd desiredSpeedVec = Kp * (targetPoseVec - currentPoseVec) + Kd * currentSpeedVec;
 
     vector<double> desiredSpeed = {desiredSpeedVec[0], desiredSpeedVec[1], desiredSpeedVec[2],
                                    desiredSpeedVec[3], desiredSpeedVec[4], desiredSpeedVec[5]};
                                    
-    rtde_control.speedL(desiredSpeed, acceleration);
+    rtde_control.speedL(desiredSpeed, acceleration, time);
 }
 
 void RobotController::haltRobot()
 {
-    //rtde_control.speedStop(1.0);
-    rtde_control.servoStop(1.0); //typical 25ms
+    rtde_control.speedStop(1.0);
+    //rtde_control.servoStop(1.0); //typical 25ms
 }

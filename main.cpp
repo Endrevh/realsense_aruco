@@ -116,7 +116,7 @@ void runVisualServo()
     thread cameraThread(cameraNotify, ref(cameraReady), camera_dt_us);
     thread controllerThread(controllerNotify, ref(controllerReady), controller_dt_us, ref(previousTimestamp));
 
-    string fileName = "../data/servo100.txt";
+    string fileName = "../data/test.txt";
     ofstream file(fileName);
 
     file.clear();
@@ -163,11 +163,9 @@ void runVisualServo()
             cout << "Cvt color time: " << cvt_color_time << "ms" << endl;
             //Mat outputImage = grayFrame.clone();
             
-
             vector<int> markerIds;
             vector<vector<Point2f>> markerCorners;
             
-
             start = std::chrono::high_resolution_clock::now();
 
             detector.detectMarkers(grayFrame, markerCorners, markerIds); // typical 12ms
@@ -183,13 +181,14 @@ void runVisualServo()
                 //tracker.skip();camera_time
                 TrackerState trackerState = tracker.getTrackerState();
 
+                start = std::chrono::high_resolution_clock::now();
+
                 if (trackerState == TrackerState::TRACKING)
                 {
                     tracker.skip();
                     robotController.haltRobot();
                 }
                 
-                start = std::chrono::high_resolution_clock::now();
                 end = chrono::high_resolution_clock::now();
                 double halt_robot_time = chrono::duration_cast<chrono::microseconds>(end - start).count() / 1000.0;
                 cout << "Halt robot time: " << halt_robot_time << "ms" << endl;
@@ -291,7 +290,6 @@ void runVisualServo()
 
                     vector<double> targetPose = {targetPosition_base[0], targetPosition_base[1], targetPosition_base[2],
                                         poseFlange_base[3], poseFlange_base[4], poseFlange_base[5]};
-
                     //cout << "-----------------------" << endl;
                     //cout << "Current position: " << poseFlange_base[0] << " " << poseFlange_base[1] << " " << poseFlange_base[2] << endl;
                     //cout << "Estimated position: " << objectPosition_base[0] << " " << objectPosition_base[1] << " " << objectPosition_base[2] << endl;
@@ -300,10 +298,12 @@ void runVisualServo()
 
                     vector<double> speedFlange_base = rtdeReceive.getActualTCPSpeed();
                     vector<double> internalTCPSpeed_base = rtdeReceive.getTargetTCPSpeed();
-                    double Kp = 1.0;
-                    double Kd = 0.0;
-                    //robotController.speedControlPD(targetPose, poseFlange_base, speedFlange_base, Kp, Kd);
-                
+
+                    vector<double> objectVelocityVector_base = {objectVelocity_base[0], objectVelocity_base[1], objectVelocity_base[2], 0, 0, 0};
+
+                    double Kp = 2.0;
+                    double Kd = 0.2;
+                    robotController.speedControlPD(targetPose, poseFlange_base, objectVelocityVector_base, Kp, controller_dt, Kd);
 
                     // write to file on the following format: timestamp, Kalman state estimate 6, trackingOffset 3, tcp_pose 6, internal tcp target 6, min egen target pose 6, tcp speed 6, internal tcp speed 6
                     auto fileTimeStamp = std::chrono::high_resolution_clock::now();
@@ -312,16 +312,17 @@ void runVisualServo()
 
                     auto end = std::chrono::high_resolution_clock::now();
                     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-                    double duration_sec = duration.count() / 10000000.0;
+                    double duration_sec = duration.count() / 1000000.0;
                     cout << "Controller time: " << duration_sec / 1000 << "ms" << endl;
 
                     double executionTime = controller_dt - duration_sec;
                     double lookahead_time = 0.1;
                     double reductionFactor = 1.0;
-                    robotController.servoL(targetPose, poseFlange_base, executionTime, lookahead_time, reductionFactor);
+                    //robotController.servoL(targetPose, poseFlange_base, executionTime, lookahead_time, reductionFactor);
 
                     break;
                 }
+
                 default:
                     break;
             }
