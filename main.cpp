@@ -363,12 +363,12 @@ void runKalmanSimulation()
 
     MatrixXd Q(6,6);
     // set Q as MatrixXd with 0.1 on first three diagonal entries and 1 on last three
-    Q << 0.1, 0, 0, 0, 0, 0,
-         0, 0.1, 0, 0, 0, 0,
-         0, 0, 0.1, 0, 0, 0,
-         0, 0, 0, 100, 0, 0,
-         0, 0, 0, 0, 100, 0,
-         0, 0, 0, 0, 0, 100;
+    Q << 1, 0, 0, 0, 0, 0,
+         0, 1, 0, 0, 0, 0,
+         0, 0, 1, 0, 0, 0,
+         0, 0, 0, 1, 0, 0,
+         0, 0, 0, 0, 1, 0,
+         0, 0, 0, 0, 0, 1;
     
     //Q.setIdentity();
     //Q *= 0.1;
@@ -383,14 +383,14 @@ void runKalmanSimulation()
     KalmanFilterSintef testFilter(camera_dt, A, C, Q, R, randomWalkCoeff);
     KalmanTesting kalmanTesting(testFilter);
     kalmanTesting.runSimulation(100);
-    string fileName = "../data/Q_01_100_R_1.txt";
+    string fileName = "../data/Q_1_1_R_1.txt";
     kalmanTesting.writeTrajectoriesToFile(fileName);
     cout << "Wrote data to " << fileName << endl;
 }
 
 int main(int argc, char** argv)
 {
-    runVisualServo();
+    //runVisualServo();
 
-    //runKalmanSimulation();
+    runKalmanSimulation();
 }

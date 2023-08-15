@@ -17,7 +17,7 @@ estimated_positions = []
 true_velocities = []
 estimated_velocities = []
 
-filename = "data/Q_01_100_R_1.txt"
+filename = "data/Q_1_1_R_1.txt"
 # Read data from file
 with open(filename, 'r') as file:
     # Skip the first line
@@ -82,7 +82,7 @@ plt.subplot(1, 2, 2)
 #plt.plot(timestamps, true_y_dot, label='True y_dot')
 plt.plot(timestamps, true_z_dot, label='True z_dot')
 plt.plot(timestamps, estimated_z_dot, label='Estimated z_dot')
-plt.plot(timestamps[:-1], differentiated_z_dot, label='Differentiated z_dot')
+#plt.plot(timestamps[:-1], differentiated_z_dot, label='Differentiated z_dot')
 plt.title(f'Z-velocities {filename}')
 plt.xlabel('Time')
 plt.ylabel('Velocity')
