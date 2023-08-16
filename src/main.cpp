@@ -390,7 +390,7 @@ void runKalmanSimulation()
 
 int main(int argc, char** argv)
 {
-    //runVisualServo();
+    runVisualServo();
 
-    runKalmanSimulation();
+    //runKalmanSimulation();
 }

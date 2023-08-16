@@ -142,30 +142,6 @@ realsense_rtdi/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/realsense_rtdi.dir/build.make CMakeFiles/realsense_rtdi.dir/build
 .PHONY : realsense_rtdi/fast
 
-main.o: main.cpp.o
-.PHONY : main.o
-
-# target to build an object file
-main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/realsense_rtdi.dir/build.make CMakeFiles/realsense_rtdi.dir/main.cpp.o
-.PHONY : main.cpp.o
-
-main.i: main.cpp.i
-.PHONY : main.i
-
-# target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/realsense_rtdi.dir/build.make CMakeFiles/realsense_rtdi.dir/main.cpp.i
-.PHONY : main.cpp.i
-
-main.s: main.cpp.s
-.PHONY : main.s
-
-# target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/realsense_rtdi.dir/build.make CMakeFiles/realsense_rtdi.dir/main.cpp.s
-.PHONY : main.cpp.s
-
 src/KalmanFilter.o: src/KalmanFilter.cpp.o
 .PHONY : src/KalmanFilter.o
 
@@ -310,6 +286,30 @@ src/Utility.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SourceLib.dir/build.make CMakeFiles/SourceLib.dir/src/Utility.cpp.s
 .PHONY : src/Utility.cpp.s
 
+src/main.o: src/main.cpp.o
+.PHONY : src/main.o
+
+# target to build an object file
+src/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/realsense_rtdi.dir/build.make CMakeFiles/realsense_rtdi.dir/src/main.cpp.o
+.PHONY : src/main.cpp.o
+
+src/main.i: src/main.cpp.i
+.PHONY : src/main.i
+
+# target to preprocess a source file
+src/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/realsense_rtdi.dir/build.make CMakeFiles/realsense_rtdi.dir/src/main.cpp.i
+.PHONY : src/main.cpp.i
+
+src/main.s: src/main.cpp.s
+.PHONY : src/main.s
+
+# target to generate assembly for a file
+src/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/realsense_rtdi.dir/build.make CMakeFiles/realsense_rtdi.dir/src/main.cpp.s
+.PHONY : src/main.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -320,9 +320,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... SourceLib"
 	@echo "... realsense_rtdi"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
 	@echo "... src/KalmanFilter.o"
 	@echo "... src/KalmanFilter.i"
 	@echo "... src/KalmanFilter.s"
@@ -341,6 +338,9 @@ help:
 	@echo "... src/Utility.o"
 	@echo "... src/Utility.i"
 	@echo "... src/Utility.s"
+	@echo "... src/main.o"
+	@echo "... src/main.i"
+	@echo "... src/main.s"
 .PHONY : help
 
 

@@ -69,28 +69,28 @@ include CMakeFiles/realsense_rtdi.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/realsense_rtdi.dir/flags.make
 
-CMakeFiles/realsense_rtdi.dir/main.cpp.o: CMakeFiles/realsense_rtdi.dir/flags.make
-CMakeFiles/realsense_rtdi.dir/main.cpp.o: ../main.cpp
-CMakeFiles/realsense_rtdi.dir/main.cpp.o: CMakeFiles/realsense_rtdi.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/endre/Documents/realsense_aruco_eh/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/realsense_rtdi.dir/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/realsense_rtdi.dir/main.cpp.o -MF CMakeFiles/realsense_rtdi.dir/main.cpp.o.d -o CMakeFiles/realsense_rtdi.dir/main.cpp.o -c /home/endre/Documents/realsense_aruco_eh/main.cpp
+CMakeFiles/realsense_rtdi.dir/src/main.cpp.o: CMakeFiles/realsense_rtdi.dir/flags.make
+CMakeFiles/realsense_rtdi.dir/src/main.cpp.o: ../src/main.cpp
+CMakeFiles/realsense_rtdi.dir/src/main.cpp.o: CMakeFiles/realsense_rtdi.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/endre/Documents/realsense_aruco_eh/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/realsense_rtdi.dir/src/main.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/realsense_rtdi.dir/src/main.cpp.o -MF CMakeFiles/realsense_rtdi.dir/src/main.cpp.o.d -o CMakeFiles/realsense_rtdi.dir/src/main.cpp.o -c /home/endre/Documents/realsense_aruco_eh/src/main.cpp
 
-CMakeFiles/realsense_rtdi.dir/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/realsense_rtdi.dir/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/endre/Documents/realsense_aruco_eh/main.cpp > CMakeFiles/realsense_rtdi.dir/main.cpp.i
+CMakeFiles/realsense_rtdi.dir/src/main.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/realsense_rtdi.dir/src/main.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/endre/Documents/realsense_aruco_eh/src/main.cpp > CMakeFiles/realsense_rtdi.dir/src/main.cpp.i
 
-CMakeFiles/realsense_rtdi.dir/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/realsense_rtdi.dir/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/endre/Documents/realsense_aruco_eh/main.cpp -o CMakeFiles/realsense_rtdi.dir/main.cpp.s
+CMakeFiles/realsense_rtdi.dir/src/main.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/realsense_rtdi.dir/src/main.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/endre/Documents/realsense_aruco_eh/src/main.cpp -o CMakeFiles/realsense_rtdi.dir/src/main.cpp.s
 
 # Object files for target realsense_rtdi
 realsense_rtdi_OBJECTS = \
-"CMakeFiles/realsense_rtdi.dir/main.cpp.o"
+"CMakeFiles/realsense_rtdi.dir/src/main.cpp.o"
 
 # External object files for target realsense_rtdi
 realsense_rtdi_EXTERNAL_OBJECTS =
 
-realsense_rtdi: CMakeFiles/realsense_rtdi.dir/main.cpp.o
+realsense_rtdi: CMakeFiles/realsense_rtdi.dir/src/main.cpp.o
 realsense_rtdi: CMakeFiles/realsense_rtdi.dir/build.make
 realsense_rtdi: libSourceLib.a
 realsense_rtdi: /usr/local/lib/libopencv_gapi.so.4.8.0

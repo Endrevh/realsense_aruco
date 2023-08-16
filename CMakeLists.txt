@@ -29,7 +29,7 @@ SET(LIB_SOURCES
 
 ADD_LIBRARY(SourceLib ${LIB_SOURCES})
 
-ADD_EXECUTABLE(realsense_rtdi main.cpp)
+ADD_EXECUTABLE(realsense_rtdi src/main.cpp)
 
 #TARGET_COMPILE_OPTIONS(realsense_rtdi PRIVATE -O3)
 
