@@ -68,10 +68,6 @@ void runVisualServo(ControllerType controllerType, double controllerParameter1, 
                                                 0.000000000000000000, 387.1867402319572875, 242.9256439317197760,
                                                 0.000000000000000000, 0.000000000000000000, 1.000000000000000000);
 
-    // Print data type and size of cameraMatrix and distortionVector
-    //cout << "Camera Matrix: " << cameraMatrix << " | " << cameraMatrix.size() << endl;
-    //cout << "Distortion Vector: " << distortionfVector << " | " << distortionVector.size() << endl;
-
     string robot_ip = "192.168.0.90";
     RTDEReceiveInterface rtdeReceive(robot_ip);
     RobotController robotController(robot_ip, 125);
@@ -120,7 +116,7 @@ void runVisualServo(ControllerType controllerType, double controllerParameter1, 
     R.setIdentity();
     R *= 0.2;
 
-    VectorXd randomWalkCoeff(6); //probably not needed, we already have Q (process noise)
+    VectorXd randomWalkCoeff(6); //not needed, we already have Q (process noise)
     randomWalkCoeff << 0, 0, 0, 0.0, 0.0, 0.0;
 
     ObjectTracker tracker(camera_dt, A, C, Q, R, randomWalkCoeff);
@@ -140,10 +136,6 @@ void runVisualServo(ControllerType controllerType, double controllerParameter1, 
     bool cameraReady = false;
     bool controllerReady = false;
 
-    //prøv to ting: 
-    // 1. ikke ta inn & som tydeligvis representerer alle variabler. Heller ta inn bare den som skal endres.
-    // 2. spawn trådene på en annen måte, som de gjør i documentation. Bruk lambda funksjoner.
-
     auto startTime = chrono::high_resolution_clock::now();
     auto previousTimestamp = chrono::high_resolution_clock::now();
 
@@ -157,21 +149,6 @@ void runVisualServo(ControllerType controllerType, double controllerParameter1, 
 
     while (true)
     {  
-        /*if (cameraReady)
-        {
-            cameraReady = false;
-        }
-        if (controllerReady)
-        {
-            controllerReady = false;
-
-            auto timeStamp = chrono::high_resolution_clock::now();
-            double timeStep = chrono::duration_cast<chrono::microseconds>(timeStamp - previousTimestamp).count() / 1000000.0;
-            previousTimestamp = chrono::high_resolution_clock::now();
-            cout << "Time step: " << timeStep << endl;
-
-            //this_thread::sleep_for(std::chrono::milliseconds(9));
-        }*/
         if (cameraReady)
         {
 
@@ -212,7 +189,6 @@ void runVisualServo(ControllerType controllerType, double controllerParameter1, 
 
             if (markerIds.size() != 1)
             {
-                //tracker.skip();camera_time
                 TrackerState trackerState = tracker.getTrackerState();
 
                 start = std::chrono::high_resolution_clock::now();
@@ -225,9 +201,7 @@ void runVisualServo(ControllerType controllerType, double controllerParameter1, 
                 
                 end = chrono::high_resolution_clock::now();
                 double halt_robot_time = chrono::duration_cast<chrono::microseconds>(end - start).count() / 1000.0;
-                cout << "Halt robot time: " << halt_robot_time << "ms" << endl;
-                
-                //robotController.haltSpeedControl();
+                cout << "Halt robot time: " << halt_robot_time << "ms" << endl;                
             }
             else
             {
@@ -243,17 +217,9 @@ void runVisualServo(ControllerType controllerType, double controllerParameter1, 
                 tvecObject_camera << tvecsObject_camera_temp[0][0], tvecsObject_camera_temp[0][1], tvecsObject_camera_temp[0][2];
                 rvecObject_camera << rvecsObject_camera_temp[0][0], rvecsObject_camera_temp[0][1], rvecsObject_camera_temp[0][2];
 
-                //file << tvecObject_camera[0] << "," << tvecObject_camera[1] << "," << tvecObject_camera[2] << endl;
-
-                //later: bygg T_camera_object, og regn ut T_base_object = T_base_flange * T_flange_camera * T_camera_object, og extract tvec_base og rvec_base derfra
-                //Matrix3d R_camera_object = axisAngleToRotationMatrix(rvecObject_camera);
-                //Matrix4d T_camera_object = buildTransformationMatrix(R_camera_object, tvecObject_camera);
-
                 //drawFrameAxes(outputImage, cameraMatrix, distortionVector, rvecsObject_camera_temp[0], tvecsObject_camera_temp[0], 0.1);
                 
                 vector<double> poseFlange_base = rtdeReceive.getActualTCPPose();
-                //cout << poseFlange_base[0] << " " << poseFlange_base[1] << " " << poseFlange_base[2] << endl;
-                //cout << poseFlange_base[3] << " " << poseFlange_base[4] << " " << poseFlange_base[5] << endl;
 
                 Vector3d tvecFlange_base;
                 tvecFlange_base << poseFlange_base[0], poseFlange_base[1], poseFlange_base[2];
@@ -265,7 +231,6 @@ void runVisualServo(ControllerType controllerType, double controllerParameter1, 
                 Matrix4d T_base_camera = T_base_flange * T_flange_camera;
                 
                 Vector3d tvecObject_base = transformVector(T_base_camera, tvecObject_camera);
-                //Vector3d tvecObject_flange = transformVector(T_flange_camera, tvecObject_camera);
 
                 Vector3d tvecCamera_base = T_base_camera.block<3, 1>(0, 3);   
                 tracker.update(tvecObject_base, tvecCamera_base);
@@ -290,7 +255,6 @@ void runVisualServo(ControllerType controllerType, double controllerParameter1, 
             switch (state)
             {
                 case TrackerState::SEARCHING:
-                    //cout << "Searching" << endl;
                     break;
                 
                 case TrackerState::TRACKING:
@@ -300,7 +264,6 @@ void runVisualServo(ControllerType controllerType, double controllerParameter1, 
                     previousTimestamp = chrono::high_resolution_clock::now();
                     cout << "Time step: " << timeStep << endl;
 
-                    //cout << "Tracking" << endl;
                     auto start = std::chrono::high_resolution_clock::now();
 
                     Vector3d objectPosition_base = tracker.getEstimatedPositionAndVelocity().head<3>();
@@ -324,11 +287,6 @@ void runVisualServo(ControllerType controllerType, double controllerParameter1, 
 
                     vector<double> targetPose = {targetPosition_base[0], targetPosition_base[1], targetPosition_base[2],
                                         poseFlange_base[3], poseFlange_base[4], poseFlange_base[5]};
-                    //cout << "-----------------------" << endl;
-                    //cout << "Current position: " << poseFlange_base[0] << " " << poseFlange_base[1] << " " << poseFlange_base[2] << endl;
-                    //cout << "Estimated position: " << objectPosition_base[0] << " " << objectPosition_base[1] << " " << objectPosition_base[2] << endl;
-                    //cout << "Estimated velocity: " << objectVelocity_base[0] << " " << objectVelocity_base[1] << " " << objectVelocity_base[2] << endl;
-                    //cout << "Target position: " << targetPosition_base[0] << " " << targetPosition_base[1] << " " << targetPosition_base[2] << endl;
 
                     vector<double> speedFlange_base = rtdeReceive.getActualTCPSpeed();
                     vector<double> internalTCPSpeed_base = rtdeReceive.getTargetTCPSpeed();
@@ -364,16 +322,6 @@ void runVisualServo(ControllerType controllerType, double controllerParameter1, 
                     break;
             }
         }
-        
-        //auto end = std::chrono::high_resolution_clock::now();
-        //auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-        //std::chrono::milliseconds dt_ms = std::chrono::milliseconds(static_cast<long long>(dt*1000));
-        //auto sleepTime = dt_ms - duration;
-        //this_thread::sleep_for(std::chrono::milliseconds(sleepTime.count()));
-        
-
-        /*if (cv::waitKey(1) == 'q')
-            break;*/
     }
 
     camera.close();
@@ -399,16 +347,12 @@ void runKalmanSimulation()
          0, 0, 1, 0, 0, 0;
 
     MatrixXd Q(6,6);
-    // set Q as MatrixXd with 0.1 on first three diagonal entries and 1 on last three
     Q << 1, 0, 0, 0, 0, 0,
          0, 1, 0, 0, 0, 0,
          0, 0, 1, 0, 0, 0,
          0, 0, 0, 1, 0, 0,
          0, 0, 0, 0, 1, 0,
          0, 0, 0, 0, 0, 1;
-    
-    //Q.setIdentity();
-    //Q *= 0.1;
 
     MatrixXd R(3,3);
     R.setIdentity();
@@ -457,8 +401,6 @@ int main(int argc, char** argv)
         input1 = 0.5; // Default value for servo
         input2 = 0.0; // Not used for servo
     }
-
-    // Now you can use the selectedController, input1, and input2 in your program logic
 
     runVisualServo(selectedController, input1, input2);
 
