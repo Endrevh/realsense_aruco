@@ -10,6 +10,22 @@
 using namespace aruco;
 using namespace ur_rtde;
 
+enum ControllerType {
+    SERVO,
+    SPEED,
+    DEFAULT
+};
+
+ControllerType parseControllerType(const std::string& input) {
+    if (input == "servo") {
+        return SERVO;
+    } else if (input == "speed") {
+        return SPEED;
+    } else {
+        return DEFAULT;
+    }
+}
+
 void controllerNotify(bool& controllerReady, int controller_dt_us, chrono::_V2::system_clock::time_point previousTimestamp) {
     while (true) {
         controllerReady = true;
@@ -24,8 +40,26 @@ void cameraNotify(bool& cameraReady, int camera_dt_us) {
     }
 }
 
-void runVisualServo()
+void runVisualServo(ControllerType controllerType, double controllerParameter1, double controllerParameter2)
 {
+    double scalingFactor;
+    double Kp;
+    double Kd; 
+
+    if (controllerType == SERVO)
+    {
+        scalingFactor = controllerParameter1;
+
+        cout << "Selected servo control with scaling factor = " << scalingFactor << endl;
+    }
+    else if (controllerType == SPEED)
+    {
+        Kp = controllerParameter1;
+        Kd = controllerParameter2;
+
+        cout << "Selected speed control with Kp = " << Kp << " and feedforward coefficient = " << Kd << endl;
+    }
+
     const string cameraMatrixFile = "../camera_matrix.csv";
     const string distortionVectorFile = "../distortion_vector.csv";
     Mat distortionVector = (Mat_<float>(5, 1) << -0.05009072990326561559,0.06612653987891520257,0.0002111387854027448041,0.0004740499866585567101,-0.02313683715979212435);
@@ -301,10 +335,6 @@ void runVisualServo()
 
                     vector<double> objectVelocityVector_base = {objectVelocity_base[0], objectVelocity_base[1], objectVelocity_base[2], 0, 0, 0};
 
-                    double Kp = 2.0;
-                    double Kd = 0.2;
-                    robotController.speedControlPD(targetPose, poseFlange_base, objectVelocityVector_base, Kp, controller_dt, Kd);
-
                     // write to file on the following format: timestamp, Kalman state estimate 6, trackingOffset 3, tcp_pose 6, internal tcp target 6, min egen target pose 6, tcp speed 6, internal tcp speed 6
                     auto fileTimeStamp = std::chrono::high_resolution_clock::now();
                     double fileTimeStampDouble = std::chrono::duration_cast<std::chrono::microseconds>(fileTimeStamp - startTime).count() / 1000000.0;
@@ -317,8 +347,15 @@ void runVisualServo()
 
                     double executionTime = controller_dt - duration_sec;
                     double lookahead_time = 0.1;
-                    double reductionFactor = 1.0;
-                    //robotController.servoL(targetPose, poseFlange_base, executionTime, lookahead_time, reductionFactor);
+
+                    if (controllerType == SERVO)
+                    {
+                        robotController.servoL(targetPose, poseFlange_base, executionTime, lookahead_time, scalingFactor);
+                    }
+                    else if (controllerType == SPEED)
+                    {
+                        robotController.speedControlPD(targetPose, poseFlange_base, objectVelocityVector_base, Kp, controller_dt, Kd);
+                    }
 
                     break;
                 }
@@ -390,7 +427,40 @@ void runKalmanSimulation()
 
 int main(int argc, char** argv)
 {
-    runVisualServo();
+    ControllerType selectedController = DEFAULT;
+    double input1 = 0.0;
+    double input2 = 0.0;
+
+    if (argc > 1) {
+        selectedController = parseControllerType(argv[1]);
+    }
+
+    if (selectedController == SPEED) {
+        if (argc > 2) {
+            std::istringstream iss(argv[2]);
+            iss >> input1;
+        }
+        if (argc > 3) {
+            std::istringstream iss(argv[3]);
+            iss >> input2;
+        }
+    } else if (selectedController == SERVO) {
+        if (argc > 2) {
+            std::istringstream iss(argv[2]);
+            iss >> input1;
+        }
+    }
+
+    // Handle invalid inputs or defaults
+    if (selectedController == DEFAULT || input1 < 0.0 || (selectedController == SERVO && input1 > 1.0) || input2 < 0.0 ) {
+        selectedController = SERVO;
+        input1 = 0.5; // Default value for servo
+        input2 = 0.0; // Not used for servo
+    }
+
+    // Now you can use the selectedController, input1, and input2 in your program logic
+
+    runVisualServo(selectedController, input1, input2);
 
     //runKalmanSimulation();
 }
