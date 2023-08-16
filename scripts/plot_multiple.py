@@ -17,7 +17,7 @@ estimated_positions = []
 true_velocities = []
 estimated_velocities = []
 
-filename = "data/Q_1_1_R_1.txt"
+filename = "data/Q_01_100_R_1.txt"
 # Read data from file
 with open(filename, 'r') as file:
     # Skip the first line
@@ -64,16 +64,16 @@ differentiated_z_dot = calculate_velocity(estimated_z, timestep)
 
 # Plotting
 plt.figure(figsize=(10, 6))
-
+plt.suptitle("Decreased variance on position, increased on velocity")
 # Plot positions
 plt.subplot(1, 2, 1)
 #plt.plot(timestamps, true_x, label='True x')
 #plt.plot(timestamps, true_y, label='True y')
 plt.plot(timestamps, true_z, label='True z')
 plt.plot(timestamps, estimated_z, label='Estimated z')
-plt.title(f'Z-positions {filename}')
-plt.xlabel('Time')
-plt.ylabel('Position')
+plt.title(f'Z-positions')
+plt.xlabel('Time [s]')
+plt.ylabel('Position [m]')
 plt.legend()
 
 # Plot velocities
@@ -83,9 +83,9 @@ plt.subplot(1, 2, 2)
 plt.plot(timestamps, true_z_dot, label='True z_dot')
 plt.plot(timestamps, estimated_z_dot, label='Estimated z_dot')
 #plt.plot(timestamps[:-1], differentiated_z_dot, label='Differentiated z_dot')
-plt.title(f'Z-velocities {filename}')
-plt.xlabel('Time')
-plt.ylabel('Velocity')
+plt.title(f'Z-velocities')
+plt.xlabel('Time [s]')
+plt.ylabel('Velocity [m/s]')
 plt.legend()
 
 # Plot differentiated positions

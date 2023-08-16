@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 # Define the file path
-file_paths = ['data/speedL_Kp20_Kd02.txt','data/servo40.txt','data/servo60.txt','data/servo80.txt','data/servo100.txt']
+file_paths = ['data/servo20.txt','data/servo40.txt','data/servo60.txt','data/servo80.txt','data/servo100.txt']
 
 # Lists to store data
 time_values = []
@@ -45,15 +45,17 @@ for i in range(len(file_paths)):
 
 # Plotting
 plt.figure(figsize=(10, 6))
-plt.plot(time_values, position_error_norms[0], label='Norm of position error')
+#plt.plot(time_values, position_error_norms[0], label='Speed control')
 #plt.plot(time_values, velocity_estimates[0], label='Position Estimate')
-#plt.plot(time_values, position_error_norms[1], label='Servo 40')
-#plt.plot(time_values, position_error_norms[2], label='Servo 60')
-plt.plot(time_values, position_error_norms[3], label='Servo 80')
-#plt.plot(time_values, position_error_norms[4], label='Servo 100')
-plt.xlabel('Time')
-plt.ylabel('Position Error Norm')
-plt.title('Norm of Position Error between TCP Pose and Target Pose')
+plt.plot(time_values, position_error_norms[0], label='Servo 20%')
+plt.plot(time_values, position_error_norms[1], label='Servo 40%')
+plt.plot(time_values, position_error_norms[2], label='Servo 60%')
+plt.plot(time_values, position_error_norms[3], label='Servo 80%')
+plt.plot(time_values, position_error_norms[4], color='purple', label='Servo 100%')
+
+plt.xlabel('Time [s]')
+plt.ylabel('Tracking error [m]')
+plt.title('ServoL with different scaling factors')
 plt.legend()
 plt.grid(True)
 plt.show()
