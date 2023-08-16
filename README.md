@@ -11,4 +11,28 @@ Ensure you have the following installed, with their respective dependencies:
 - RealSense SDK 2.0 for C++
 - Eigen library for C++
 
+### Installation and build 💽
+
+- **Step 1**: 
+
+Clone the repository using:
+
+```bash
+    git clone https://github.com/Endrevh/realsense_aruco.git && cd build
+  ```
+
+- **Step 2**:
+Run the cmake command
+```bash
+    cmake .
+```
+
+- **Step 3**:
+Run the make command
+```bash
+    make
+```
+
+
+
 
